@@ -28,7 +28,7 @@ function LessonPage() {
 
   const [playing, setPlaying] = useState(false);
   const [elapsed, setElapsed] = useState(0);
-  const tanRef = useRef<ReturnType<typeof startTanpura> | null>(null);
+  const harRef = useRef<HarmoniumHandle | null>(null);
   const talaRef = useRef<TalaHandle | null>(null);
   const startedRef = useRef<number | null>(null);
 
