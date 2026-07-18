@@ -4,7 +4,9 @@ import { getAudio, ensureRunning, freqToNote } from "./transport";
 export interface PitchHandle {
   stop: () => void;
   onPitch: (cb: (freq: number | null, note: string | null, cents: number | null) => void) => void;
+  stream: MediaStream;
 }
+
 
 export async function startPitch(): Promise<PitchHandle> {
   const { ctx } = getAudio();
@@ -65,5 +67,7 @@ export async function startPitch(): Promise<PitchHandle> {
       src.disconnect();
     },
     onPitch(cb) { listener = cb; },
+    stream,
   };
 }
+
