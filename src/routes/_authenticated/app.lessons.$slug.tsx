@@ -5,11 +5,14 @@ import { useServerFn } from "@tanstack/react-start";
 import { AppShell } from "@/components/app-shell";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Slider } from "@/components/ui/slider";
+import { Label } from "@/components/ui/label";
 import { listLessons, logPracticeSession, markLessonComplete } from "@/lib/practice.functions";
 import { startHarmoniumSequence, parseSargam, reverseTokens, type SequenceHandle, type SeqToken } from "@/lib/audio/harmonium";
 import { startTala, getTala, type TalaHandle } from "@/lib/audio/tala";
 import { Play, Square, Check, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
+
 
 export const Route = createFileRoute("/_authenticated/app/lessons/$slug")({
   head: () => ({ meta: [{ title: "Lesson — Riyaz" }] }),
@@ -29,9 +32,11 @@ function LessonPage() {
   const [playing, setPlaying] = useState(false);
   const [elapsed, setElapsed] = useState(0);
   const [activeStep, setActiveStep] = useState<number | null>(null);
+  const [bpm, setBpm] = useState<number>(60);
   const harRef = useRef<SequenceHandle | null>(null);
   const talaRef = useRef<TalaHandle | null>(null);
   const startedRef = useRef<number | null>(null);
+
 
   useEffect(() => () => {
     harRef.current?.stop();
