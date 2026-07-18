@@ -6,49 +6,81 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { startTanpura, type TanpuraPattern } from "@/lib/audio/tanpura";
+import { startHarmonium, type HarmoniumHandle, type HarmoniumNoteSet } from "@/lib/audio/harmonium";
 import { NOTE_NAMES } from "@/lib/audio/transport";
 import { Play, Square } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/app/tanpura")({
-  head: () => ({ meta: [{ title: "Tanpura — Riyaz" }] }),
+  head: () => ({ meta: [{ title: "Drone — Riyaz" }] }),
   component: TanpuraPage,
 });
 
+type Instrument = "tanpura" | "harmonium";
+
 function TanpuraPage() {
+  const [instrument, setInstrument] = useState<Instrument>("tanpura");
   const [sa, setSa] = useState("C");
   const [pattern, setPattern] = useState<TanpuraPattern>("pa-sa");
+  const [noteSet, setNoteSet] = useState<HarmoniumNoteSet>("sa-pa");
   const [bpm, setBpm] = useState(48);
   const [volume, setVolume] = useState(0.7);
   const [playing, setPlaying] = useState(false);
-  const handleRef = useRef<ReturnType<typeof startTanpura> | null>(null);
+  const tanRef = useRef<ReturnType<typeof startTanpura> | null>(null);
+  const harRef = useRef<HarmoniumHandle | null>(null);
 
-  useEffect(() => () => { handleRef.current?.stop(); }, []);
-  useEffect(() => { handleRef.current?.setVolume(volume); }, [volume]);
-  useEffect(() => { handleRef.current?.setSpeed(bpm); }, [bpm]);
+  function stopAll() {
+    tanRef.current?.stop();
+    harRef.current?.stop();
+    tanRef.current = null;
+    harRef.current = null;
+  }
+
+  function startCurrent() {
+    if (instrument === "tanpura") {
+      tanRef.current = startTanpura({ sa, pattern, bpm, volume });
+    } else {
+      harRef.current = startHarmonium({ sa, set: noteSet, volume });
+    }
+  }
+
+  useEffect(() => () => stopAll(), []);
+
+  useEffect(() => {
+    tanRef.current?.setVolume(volume);
+    harRef.current?.setVolume(volume);
+  }, [volume]);
+
+  useEffect(() => { tanRef.current?.setSpeed(bpm); }, [bpm]);
+
+  useEffect(() => {
+    if (playing) {
+      stopAll();
+      startCurrent();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sa, pattern, noteSet, instrument]);
 
   function toggle() {
     if (playing) {
-      handleRef.current?.stop();
-      handleRef.current = null;
+      stopAll();
       setPlaying(false);
     } else {
-      handleRef.current = startTanpura({ sa, pattern, bpm, volume });
+      startCurrent();
       setPlaying(true);
     }
   }
 
-  useEffect(() => {
-    if (playing) {
-      handleRef.current?.stop();
-      handleRef.current = startTanpura({ sa, pattern, bpm, volume });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sa, pattern]);
-
   return (
-    <AppShell title="Tanpura">
+    <AppShell title="Drone">
       <Card className="p-6">
+        <Tabs value={instrument} onValueChange={(v) => setInstrument(v as Instrument)}>
+          <TabsList className="mx-auto mb-6 grid w-full max-w-xs grid-cols-2">
+            <TabsTrigger value="tanpura">Tanpura</TabsTrigger>
+            <TabsTrigger value="harmonium">Harmonium</TabsTrigger>
+          </TabsList>
+        </Tabs>
         <div className="flex flex-col items-center gap-6">
           <div className="text-center">
             <div className="mono-num text-xs uppercase tracking-widest text-muted-foreground">Sa</div>
@@ -81,27 +113,45 @@ function TanpuraPage() {
               </SelectContent>
             </Select>
           </div>
-          <div className="space-y-2">
-            <Label>String pattern</Label>
-            <Select value={pattern} onValueChange={(v) => setPattern(v as TanpuraPattern)}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="pa-sa">Pa - Sa - Sa - Sa</SelectItem>
-                <SelectItem value="ma-sa">Ma - Sa - Sa - Sa</SelectItem>
-                <SelectItem value="ni-sa">Ni - Sa - Sa - Sa</SelectItem>
-                <SelectItem value="sa-sa">Sa - Sa - Sa - Sa</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+
+          {instrument === "tanpura" ? (
+            <div className="space-y-2">
+              <Label>String pattern</Label>
+              <Select value={pattern} onValueChange={(v) => setPattern(v as TanpuraPattern)}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="pa-sa">Pa - Sa - Sa - Sa</SelectItem>
+                  <SelectItem value="ma-sa">Ma - Sa - Sa - Sa</SelectItem>
+                  <SelectItem value="ni-sa">Ni - Sa - Sa - Sa</SelectItem>
+                  <SelectItem value="sa-sa">Sa - Sa - Sa - Sa</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              <Label>Reed notes</Label>
+              <Select value={noteSet} onValueChange={(v) => setNoteSet(v as HarmoniumNoteSet)}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="sa">Sa only</SelectItem>
+                  <SelectItem value="sa-pa">Sa + Pa</SelectItem>
+                  <SelectItem value="sa-ma">Sa + Ma</SelectItem>
+                  <SelectItem value="sa-pa-sa8">Sa + Pa + Sa'</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          )}
         </div>
 
-        <div className="space-y-2">
-          <div className="flex items-baseline justify-between">
-            <Label>Jhala speed</Label>
-            <span className="mono-num text-sm text-muted-foreground">{bpm} spm</span>
+        {instrument === "tanpura" && (
+          <div className="space-y-2">
+            <div className="flex items-baseline justify-between">
+              <Label>Jhala speed</Label>
+              <span className="mono-num text-sm text-muted-foreground">{bpm} spm</span>
+            </div>
+            <Slider min={20} max={90} step={1} value={[bpm]} onValueChange={(v) => setBpm(v[0])} />
           </div>
-          <Slider min={20} max={90} step={1} value={[bpm]} onValueChange={(v) => setBpm(v[0])} />
-        </div>
+        )}
 
         <div className="space-y-2">
           <div className="flex items-baseline justify-between">
