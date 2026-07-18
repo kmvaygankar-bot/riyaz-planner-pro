@@ -73,9 +73,15 @@ function LessonPage() {
       talaRef.current?.stop();
       harRef.current = null;
       talaRef.current = null;
+      setActiveStep(null);
       setPlaying(false);
     } else {
-      harRef.current = startHarmonium({ sa: lesson.target_sa, set: "sa-pa", volume: 0.6 });
+      const aaroh = parseSargam(lesson.pattern || "S R G M P D N Ṡ");
+      const avroh = reverseTokens(aaroh);
+      const tokens: SeqToken[] = [...aaroh, { semis: 0, rest: true }, ...avroh, { semis: 0, rest: true }];
+      const h = startHarmoniumSequence({ sa: lesson.target_sa, tokens, bpm: lesson.bpm, loop: true, volume: 0.55, drone: true });
+      h.onStep((i) => setActiveStep(i));
+      harRef.current = h;
       if (lesson.tala) {
         talaRef.current = startTala({ tala: getTala(lesson.tala), bpm: lesson.bpm });
       }
