@@ -108,35 +108,50 @@ export interface SeqToken {
   rest?: boolean;
 }
 
-/** Parse a pattern like "SRGM RGMP" or "S~R R~G" into tokens. */
+/** Parse a pattern like "SRGM RGMP" or "S~R R~G" or "S R G M P D N S'" into tokens. */
 export function parseSargam(pattern: string): SeqToken[] {
   const tokens: SeqToken[] = [];
   const chars = Array.from(pattern);
   let i = 0;
+  function readDegree(): { semis: number; consumed: number } | null {
+    const c = chars[i];
+    if (!(c in DEGREE)) return null;
+    let semis = DEGREE[c];
+    let consumed = 1;
+    // trailing apostrophes = octave up, commas = octave down
+    while (chars[i + consumed] === "'") { semis += 12; consumed++; }
+    while (chars[i + consumed] === ",") { semis -= 12; consumed++; }
+    // support "M#" for tivra Ma
+    if (c === "M" && chars[i + consumed] === "#") { semis = 6; consumed++; }
+    return { semis, consumed };
+  }
   while (i < chars.length) {
     const c = chars[i];
-    if (c === " " || c === "\t" || c === "\n" || c === "|" || c === ",") {
-      // phrase separator → short rest
+    if (c === " " || c === "\t" || c === "\n" || c === "|" || c === "-") {
       if (tokens.length && !tokens[tokens.length - 1].rest) tokens.push({ semis: 0, rest: true });
       i++;
       continue;
     }
-    if (c in DEGREE) {
-      const semis = DEGREE[c];
-      // check for glide "~"
-      if (chars[i + 1] === "~" && chars[i + 2] in DEGREE) {
-        tokens.push({ semis, glideTo: DEGREE[chars[i + 2]] });
-        i += 3;
-        continue;
+    const d = readDegree();
+    if (d) {
+      // glide?
+      if (chars[i + d.consumed] === "~") {
+        const saveI = i;
+        i += d.consumed + 1;
+        const d2 = readDegree();
+        if (d2) {
+          tokens.push({ semis: d.semis, glideTo: d2.semis });
+          i += d2.consumed;
+          continue;
+        }
+        i = saveI;
       }
-      tokens.push({ semis });
-      i++;
+      tokens.push({ semis: d.semis });
+      i += d.consumed;
       continue;
     }
-    // unknown char, skip
     i++;
   }
-  // strip trailing rest
   while (tokens.length && tokens[tokens.length - 1].rest) tokens.pop();
   return tokens;
 }
