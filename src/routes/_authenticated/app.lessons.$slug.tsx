@@ -102,7 +102,12 @@ function LessonPage() {
           <span>Sa: <span className="text-foreground">{lesson.target_sa}</span></span>
           <span>Tempo: <span className="text-foreground">{lesson.bpm} bpm</span></span>
           {lesson.tala && <span>Tala: <span className="text-foreground">{lesson.tala}</span></span>}
-          <span>Loops: <span className="text-foreground">{lesson.loop_count}</span></span>
+          {target ? (
+            <span>Target: <span className="text-foreground">{Math.round(target / 60)} min</span></span>
+          ) : (
+            <span>Loops: <span className="text-foreground">{lesson.loop_count}</span></span>
+          )}
+          <span>Drone: <span className="text-foreground">Harmonium</span></span>
         </div>
       </Card>
 
