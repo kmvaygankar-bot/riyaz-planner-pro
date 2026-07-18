@@ -9,38 +9,175 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated/app.index'
+import { Route as AuthenticatedAppTunerRouteImport } from './routes/_authenticated/app.tuner'
+import { Route as AuthenticatedAppTanpuraRouteImport } from './routes/_authenticated/app.tanpura'
+import { Route as AuthenticatedAppTalaRouteImport } from './routes/_authenticated/app.tala'
+import { Route as AuthenticatedAppProfileRouteImport } from './routes/_authenticated/app.profile'
+import { Route as AuthenticatedAppHistoryRouteImport } from './routes/_authenticated/app.history'
+import { Route as AuthenticatedAppLessonsIndexRouteImport } from './routes/_authenticated/app.lessons.index'
+import { Route as AuthenticatedAppLessonsSlugRouteImport } from './routes/_authenticated/app.lessons.$slug'
 
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAppIndexRoute = AuthenticatedAppIndexRouteImport.update({
+  id: '/app/',
+  path: '/app/',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAppTunerRoute = AuthenticatedAppTunerRouteImport.update({
+  id: '/app/tuner',
+  path: '/app/tuner',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAppTanpuraRoute = AuthenticatedAppTanpuraRouteImport.update({
+  id: '/app/tanpura',
+  path: '/app/tanpura',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAppTalaRoute = AuthenticatedAppTalaRouteImport.update({
+  id: '/app/tala',
+  path: '/app/tala',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAppProfileRoute = AuthenticatedAppProfileRouteImport.update({
+  id: '/app/profile',
+  path: '/app/profile',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAppHistoryRoute = AuthenticatedAppHistoryRouteImport.update({
+  id: '/app/history',
+  path: '/app/history',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAppLessonsIndexRoute =
+  AuthenticatedAppLessonsIndexRouteImport.update({
+    id: '/app/lessons/',
+    path: '/app/lessons/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedAppLessonsSlugRoute =
+  AuthenticatedAppLessonsSlugRouteImport.update({
+    id: '/app/lessons/$slug',
+    path: '/app/lessons/$slug',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/app/history': typeof AuthenticatedAppHistoryRoute
+  '/app/profile': typeof AuthenticatedAppProfileRoute
+  '/app/tala': typeof AuthenticatedAppTalaRoute
+  '/app/tanpura': typeof AuthenticatedAppTanpuraRoute
+  '/app/tuner': typeof AuthenticatedAppTunerRoute
+  '/app/': typeof AuthenticatedAppIndexRoute
+  '/app/lessons/$slug': typeof AuthenticatedAppLessonsSlugRoute
+  '/app/lessons/': typeof AuthenticatedAppLessonsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/app/history': typeof AuthenticatedAppHistoryRoute
+  '/app/profile': typeof AuthenticatedAppProfileRoute
+  '/app/tala': typeof AuthenticatedAppTalaRoute
+  '/app/tanpura': typeof AuthenticatedAppTanpuraRoute
+  '/app/tuner': typeof AuthenticatedAppTunerRoute
+  '/app': typeof AuthenticatedAppIndexRoute
+  '/app/lessons/$slug': typeof AuthenticatedAppLessonsSlugRoute
+  '/app/lessons': typeof AuthenticatedAppLessonsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/_authenticated/app/history': typeof AuthenticatedAppHistoryRoute
+  '/_authenticated/app/profile': typeof AuthenticatedAppProfileRoute
+  '/_authenticated/app/tala': typeof AuthenticatedAppTalaRoute
+  '/_authenticated/app/tanpura': typeof AuthenticatedAppTanpuraRoute
+  '/_authenticated/app/tuner': typeof AuthenticatedAppTunerRoute
+  '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
+  '/_authenticated/app/lessons/$slug': typeof AuthenticatedAppLessonsSlugRoute
+  '/_authenticated/app/lessons/': typeof AuthenticatedAppLessonsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/app/history'
+    | '/app/profile'
+    | '/app/tala'
+    | '/app/tanpura'
+    | '/app/tuner'
+    | '/app/'
+    | '/app/lessons/$slug'
+    | '/app/lessons/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/auth'
+    | '/app/history'
+    | '/app/profile'
+    | '/app/tala'
+    | '/app/tanpura'
+    | '/app/tuner'
+    | '/app'
+    | '/app/lessons/$slug'
+    | '/app/lessons'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/auth'
+    | '/_authenticated/app/history'
+    | '/_authenticated/app/profile'
+    | '/_authenticated/app/tala'
+    | '/_authenticated/app/tanpura'
+    | '/_authenticated/app/tuner'
+    | '/_authenticated/app/'
+    | '/_authenticated/app/lessons/$slug'
+    | '/_authenticated/app/lessons/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,22 +185,95 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/app/': {
+      id: '/_authenticated/app/'
+      path: '/app'
+      fullPath: '/app/'
+      preLoaderRoute: typeof AuthenticatedAppIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/app/tuner': {
+      id: '/_authenticated/app/tuner'
+      path: '/app/tuner'
+      fullPath: '/app/tuner'
+      preLoaderRoute: typeof AuthenticatedAppTunerRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/app/tanpura': {
+      id: '/_authenticated/app/tanpura'
+      path: '/app/tanpura'
+      fullPath: '/app/tanpura'
+      preLoaderRoute: typeof AuthenticatedAppTanpuraRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/app/tala': {
+      id: '/_authenticated/app/tala'
+      path: '/app/tala'
+      fullPath: '/app/tala'
+      preLoaderRoute: typeof AuthenticatedAppTalaRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/app/profile': {
+      id: '/_authenticated/app/profile'
+      path: '/app/profile'
+      fullPath: '/app/profile'
+      preLoaderRoute: typeof AuthenticatedAppProfileRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/app/history': {
+      id: '/_authenticated/app/history'
+      path: '/app/history'
+      fullPath: '/app/history'
+      preLoaderRoute: typeof AuthenticatedAppHistoryRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/app/lessons/': {
+      id: '/_authenticated/app/lessons/'
+      path: '/app/lessons'
+      fullPath: '/app/lessons/'
+      preLoaderRoute: typeof AuthenticatedAppLessonsIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/app/lessons/$slug': {
+      id: '/_authenticated/app/lessons/$slug'
+      path: '/app/lessons/$slug'
+      fullPath: '/app/lessons/$slug'
+      preLoaderRoute: typeof AuthenticatedAppLessonsSlugRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAppHistoryRoute: typeof AuthenticatedAppHistoryRoute
+  AuthenticatedAppProfileRoute: typeof AuthenticatedAppProfileRoute
+  AuthenticatedAppTalaRoute: typeof AuthenticatedAppTalaRoute
+  AuthenticatedAppTanpuraRoute: typeof AuthenticatedAppTanpuraRoute
+  AuthenticatedAppTunerRoute: typeof AuthenticatedAppTunerRoute
+  AuthenticatedAppIndexRoute: typeof AuthenticatedAppIndexRoute
+  AuthenticatedAppLessonsSlugRoute: typeof AuthenticatedAppLessonsSlugRoute
+  AuthenticatedAppLessonsIndexRoute: typeof AuthenticatedAppLessonsIndexRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAppHistoryRoute: AuthenticatedAppHistoryRoute,
+  AuthenticatedAppProfileRoute: AuthenticatedAppProfileRoute,
+  AuthenticatedAppTalaRoute: AuthenticatedAppTalaRoute,
+  AuthenticatedAppTanpuraRoute: AuthenticatedAppTanpuraRoute,
+  AuthenticatedAppTunerRoute: AuthenticatedAppTunerRoute,
+  AuthenticatedAppIndexRoute: AuthenticatedAppIndexRoute,
+  AuthenticatedAppLessonsSlugRoute: AuthenticatedAppLessonsSlugRoute,
+  AuthenticatedAppLessonsIndexRoute: AuthenticatedAppLessonsIndexRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
