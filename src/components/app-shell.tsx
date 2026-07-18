@@ -1,5 +1,5 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { Home, Music, Timer, GraduationCap, Mic, BarChart3, User, LogOut } from "lucide-react";
+import { Home, Music, Timer, GraduationCap, Mic, BarChart3, User, LogOut, AudioLines } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import type { ReactNode } from "react";
@@ -7,6 +7,7 @@ import type { ReactNode } from "react";
 type NavItem = { to: string; label: string; icon: typeof Home; exact?: boolean };
 const NAV: NavItem[] = [
   { to: "/app", label: "Today", icon: Home, exact: true },
+  { to: "/app/studio", label: "Studio", icon: AudioLines },
   { to: "/app/tanpura", label: "Tanpura", icon: Music },
   { to: "/app/tala", label: "Tala", icon: Timer },
   { to: "/app/lessons", label: "Lessons", icon: GraduationCap },
