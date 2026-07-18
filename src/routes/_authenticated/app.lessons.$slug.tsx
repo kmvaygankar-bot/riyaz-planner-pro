@@ -103,6 +103,9 @@ function LessonPage() {
         {lesson.pattern && (
           <div className="mono-num mt-4 rounded-md bg-muted p-4 text-center text-lg tracking-widest">
             {lesson.pattern}
+            {playing && activeStep !== null && (
+              <div className="mt-2 text-xs text-primary">▸ playing note {activeStep + 1}</div>
+            )}
           </div>
         )}
         <div className="mono-num mt-4 flex flex-wrap gap-4 text-xs text-muted-foreground">
