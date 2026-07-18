@@ -14,7 +14,187 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      lesson_progress: {
+        Row: {
+          completed_at: string
+          lesson_id: string
+          times_practiced: number
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string
+          lesson_id: string
+          times_practiced?: number
+          user_id: string
+        }
+        Update: {
+          completed_at?: string
+          lesson_id?: string
+          times_practiced?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lesson_progress_lesson_id_fkey"
+            columns: ["lesson_id"]
+            isOneToOne: false
+            referencedRelation: "lessons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lessons: {
+        Row: {
+          bpm: number
+          category: string
+          created_at: string
+          id: string
+          instructions: string
+          level: string
+          loop_count: number
+          order_index: number
+          pattern: string | null
+          slug: string
+          tala: string | null
+          target_sa: string
+          title: string
+          tradition: string
+        }
+        Insert: {
+          bpm?: number
+          category: string
+          created_at?: string
+          id?: string
+          instructions: string
+          level: string
+          loop_count?: number
+          order_index?: number
+          pattern?: string | null
+          slug: string
+          tala?: string | null
+          target_sa?: string
+          title: string
+          tradition: string
+        }
+        Update: {
+          bpm?: number
+          category?: string
+          created_at?: string
+          id?: string
+          instructions?: string
+          level?: string
+          loop_count?: number
+          order_index?: number
+          pattern?: string | null
+          slug?: string
+          tala?: string | null
+          target_sa?: string
+          title?: string
+          tradition?: string
+        }
+        Relationships: []
+      }
+      practice_sessions: {
+        Row: {
+          created_at: string
+          duration_sec: number
+          ended_at: string | null
+          id: string
+          lesson_id: string | null
+          notes: string | null
+          pitch_stats: Json | null
+          started_at: string
+          tools: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          duration_sec?: number
+          ended_at?: string | null
+          id?: string
+          lesson_id?: string | null
+          notes?: string | null
+          pitch_stats?: Json | null
+          started_at?: string
+          tools?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          duration_sec?: number
+          ended_at?: string | null
+          id?: string
+          lesson_id?: string | null
+          notes?: string | null
+          pitch_stats?: Json | null
+          started_at?: string
+          tools?: Json
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "practice_sessions_lesson_id_fkey"
+            columns: ["lesson_id"]
+            isOneToOne: false
+            referencedRelation: "lessons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          default_sa: string
+          display_name: string | null
+          id: string
+          tradition: string
+          updated_at: string
+          voice_type: string | null
+        }
+        Insert: {
+          created_at?: string
+          default_sa?: string
+          display_name?: string | null
+          id: string
+          tradition?: string
+          updated_at?: string
+          voice_type?: string | null
+        }
+        Update: {
+          created_at?: string
+          default_sa?: string
+          display_name?: string | null
+          id?: string
+          tradition?: string
+          updated_at?: string
+          voice_type?: string | null
+        }
+        Relationships: []
+      }
+      user_settings: {
+        Row: {
+          default_bpm: number
+          default_sa: string
+          default_tala: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          default_bpm?: number
+          default_sa?: string
+          default_tala?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          default_bpm?: number
+          default_sa?: string
+          default_tala?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
