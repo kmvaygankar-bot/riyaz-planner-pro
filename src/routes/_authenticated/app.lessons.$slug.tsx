@@ -28,7 +28,8 @@ function LessonPage() {
 
   const [playing, setPlaying] = useState(false);
   const [elapsed, setElapsed] = useState(0);
-  const harRef = useRef<HarmoniumHandle | null>(null);
+  const [activeStep, setActiveStep] = useState<number | null>(null);
+  const harRef = useRef<SequenceHandle | null>(null);
   const talaRef = useRef<TalaHandle | null>(null);
   const startedRef = useRef<number | null>(null);
 
