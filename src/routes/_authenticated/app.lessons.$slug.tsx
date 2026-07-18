@@ -6,7 +6,7 @@ import { AppShell } from "@/components/app-shell";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { listLessons, logPracticeSession, markLessonComplete } from "@/lib/practice.functions";
-import { startTanpura } from "@/lib/audio/tanpura";
+import { startHarmonium, type HarmoniumHandle } from "@/lib/audio/harmonium";
 import { startTala, getTala, type TalaHandle } from "@/lib/audio/tala";
 import { Play, Square, Check, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
