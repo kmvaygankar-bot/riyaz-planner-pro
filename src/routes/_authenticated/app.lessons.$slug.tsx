@@ -33,7 +33,7 @@ function LessonPage() {
   const startedRef = useRef<number | null>(null);
 
   useEffect(() => () => {
-    tanRef.current?.stop();
+    harRef.current?.stop();
     talaRef.current?.stop();
   }, []);
 
@@ -49,7 +49,7 @@ function LessonPage() {
     mutationFn: async () => {
       if (!lesson) return;
       if (elapsed >= 30) {
-        await log({ data: { duration_sec: elapsed, lesson_id: lesson.id, tools: { tanpura: true, tala: !!lesson.tala } } });
+        await log({ data: { duration_sec: elapsed, lesson_id: lesson.id, tools: { harmonium: true, tala: !!lesson.tala } } });
       }
       await complete({ data: { lesson_id: lesson.id } });
     },
@@ -63,16 +63,18 @@ function LessonPage() {
     return <AppShell title="Lesson"><p className="text-sm text-muted-foreground">Loading…</p></AppShell>;
   }
 
+  const target = (lesson as { duration_target_sec?: number | null }).duration_target_sec ?? null;
+
   function toggle() {
     if (!lesson) return;
     if (playing) {
-      tanRef.current?.stop();
+      harRef.current?.stop();
       talaRef.current?.stop();
-      tanRef.current = null;
+      harRef.current = null;
       talaRef.current = null;
       setPlaying(false);
     } else {
-      tanRef.current = startTanpura({ sa: lesson.target_sa, pattern: "pa-sa", bpm: 48, volume: 0.55 });
+      harRef.current = startHarmonium({ sa: lesson.target_sa, set: "sa-pa", volume: 0.6 });
       if (lesson.tala) {
         talaRef.current = startTala({ tala: getTala(lesson.tala), bpm: lesson.bpm });
       }
