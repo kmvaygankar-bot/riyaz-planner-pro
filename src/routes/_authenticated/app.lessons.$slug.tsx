@@ -5,11 +5,14 @@ import { useServerFn } from "@tanstack/react-start";
 import { AppShell } from "@/components/app-shell";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Slider } from "@/components/ui/slider";
+import { Label } from "@/components/ui/label";
 import { listLessons, logPracticeSession, markLessonComplete } from "@/lib/practice.functions";
 import { startHarmoniumSequence, parseSargam, reverseTokens, type SequenceHandle, type SeqToken } from "@/lib/audio/harmonium";
 import { startTala, getTala, type TalaHandle } from "@/lib/audio/tala";
 import { Play, Square, Check, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
+
 
 export const Route = createFileRoute("/_authenticated/app/lessons/$slug")({
   head: () => ({ meta: [{ title: "Lesson — Riyaz" }] }),
@@ -29,14 +32,32 @@ function LessonPage() {
   const [playing, setPlaying] = useState(false);
   const [elapsed, setElapsed] = useState(0);
   const [activeStep, setActiveStep] = useState<number | null>(null);
+  const [bpm, setBpm] = useState<number>(60);
   const harRef = useRef<SequenceHandle | null>(null);
   const talaRef = useRef<TalaHandle | null>(null);
   const startedRef = useRef<number | null>(null);
+
 
   useEffect(() => () => {
     harRef.current?.stop();
     talaRef.current?.stop();
   }, []);
+
+  // Initialize BPM from lesson + persisted per-lesson override
+  useEffect(() => {
+    if (!lesson) return;
+    const key = `riyaz:lesson-bpm:${slug}`;
+    const saved = typeof window !== "undefined" ? window.localStorage.getItem(key) : null;
+    const n = saved ? Number(saved) : NaN;
+    setBpm(Number.isFinite(n) && n >= 40 && n <= 120 ? n : lesson.bpm);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lesson?.id]);
+
+  function updateBpm(v: number) {
+    setBpm(v);
+    try { window.localStorage.setItem(`riyaz:lesson-bpm:${slug}`, String(v)); } catch { /* ignore */ }
+  }
+
 
   useEffect(() => {
     if (!playing) return;
@@ -79,12 +100,13 @@ function LessonPage() {
       const aaroh = parseSargam(lesson.pattern || "S R G M P D N Ṡ");
       const avroh = reverseTokens(aaroh);
       const tokens: SeqToken[] = [...aaroh, { semis: 0, rest: true }, ...avroh, { semis: 0, rest: true }];
-      const h = startHarmoniumSequence({ sa: lesson.target_sa, tokens, bpm: lesson.bpm, loop: true, volume: 0.55, drone: true });
+      const h = startHarmoniumSequence({ sa: lesson.target_sa, tokens, bpm, loop: true, volume: 0.55, drone: true });
       h.onStep((i) => setActiveStep(i));
       harRef.current = h;
       if (lesson.tala) {
-        talaRef.current = startTala({ tala: getTala(lesson.tala), bpm: lesson.bpm });
+        talaRef.current = startTala({ tala: getTala(lesson.tala), bpm });
       }
+
       startedRef.current = Date.now() - elapsed * 1000;
       setPlaying(true);
     }
@@ -122,6 +144,27 @@ function LessonPage() {
       </Card>
 
       <Card className="mt-4 p-6">
+        <div className="space-y-2">
+          <div className="flex items-baseline justify-between">
+            <Label>Tempo</Label>
+            <span className="mono-num text-sm text-muted-foreground">{bpm} bpm</span>
+          </div>
+          <Slider
+            min={40}
+            max={120}
+            step={2}
+            value={[bpm]}
+            onValueChange={(v) => updateBpm(v[0])}
+            disabled={playing}
+          />
+          <p className="text-xs text-muted-foreground">
+            Suggested: {lesson.bpm} bpm. Slow down while learning, speed up as you get comfortable.
+          </p>
+        </div>
+      </Card>
+
+      <Card className="mt-4 p-6">
+
         <div className="flex flex-col items-center gap-4">
           <div className="mono-num text-5xl font-semibold">{mm}:{ss}</div>
           <div className="flex gap-3">
