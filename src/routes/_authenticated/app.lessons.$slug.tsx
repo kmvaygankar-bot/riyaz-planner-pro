@@ -6,7 +6,7 @@ import { AppShell } from "@/components/app-shell";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { listLessons, logPracticeSession, markLessonComplete } from "@/lib/practice.functions";
-import { startTanpura } from "@/lib/audio/tanpura";
+import { startHarmonium, type HarmoniumHandle } from "@/lib/audio/harmonium";
 import { startTala, getTala, type TalaHandle } from "@/lib/audio/tala";
 import { Play, Square, Check, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
@@ -28,12 +28,12 @@ function LessonPage() {
 
   const [playing, setPlaying] = useState(false);
   const [elapsed, setElapsed] = useState(0);
-  const tanRef = useRef<ReturnType<typeof startTanpura> | null>(null);
+  const harRef = useRef<HarmoniumHandle | null>(null);
   const talaRef = useRef<TalaHandle | null>(null);
   const startedRef = useRef<number | null>(null);
 
   useEffect(() => () => {
-    tanRef.current?.stop();
+    harRef.current?.stop();
     talaRef.current?.stop();
   }, []);
 
@@ -49,7 +49,7 @@ function LessonPage() {
     mutationFn: async () => {
       if (!lesson) return;
       if (elapsed >= 30) {
-        await log({ data: { duration_sec: elapsed, lesson_id: lesson.id, tools: { tanpura: true, tala: !!lesson.tala } } });
+        await log({ data: { duration_sec: elapsed, lesson_id: lesson.id, tools: { harmonium: true, tala: !!lesson.tala } } });
       }
       await complete({ data: { lesson_id: lesson.id } });
     },
@@ -63,16 +63,18 @@ function LessonPage() {
     return <AppShell title="Lesson"><p className="text-sm text-muted-foreground">Loading…</p></AppShell>;
   }
 
+  const target = (lesson as { duration_target_sec?: number | null }).duration_target_sec ?? null;
+
   function toggle() {
     if (!lesson) return;
     if (playing) {
-      tanRef.current?.stop();
+      harRef.current?.stop();
       talaRef.current?.stop();
-      tanRef.current = null;
+      harRef.current = null;
       talaRef.current = null;
       setPlaying(false);
     } else {
-      tanRef.current = startTanpura({ sa: lesson.target_sa, pattern: "pa-sa", bpm: 48, volume: 0.55 });
+      harRef.current = startHarmonium({ sa: lesson.target_sa, set: "sa-pa", volume: 0.6 });
       if (lesson.tala) {
         talaRef.current = startTala({ tala: getTala(lesson.tala), bpm: lesson.bpm });
       }
@@ -100,7 +102,12 @@ function LessonPage() {
           <span>Sa: <span className="text-foreground">{lesson.target_sa}</span></span>
           <span>Tempo: <span className="text-foreground">{lesson.bpm} bpm</span></span>
           {lesson.tala && <span>Tala: <span className="text-foreground">{lesson.tala}</span></span>}
-          <span>Loops: <span className="text-foreground">{lesson.loop_count}</span></span>
+          {target ? (
+            <span>Target: <span className="text-foreground">{Math.round(target / 60)} min</span></span>
+          ) : (
+            <span>Loops: <span className="text-foreground">{lesson.loop_count}</span></span>
+          )}
+          <span>Drone: <span className="text-foreground">Harmonium</span></span>
         </div>
       </Card>
 

@@ -48,6 +48,7 @@ export type Database = {
           bpm: number
           category: string
           created_at: string
+          duration_target_sec: number | null
           id: string
           instructions: string
           level: string
@@ -64,6 +65,7 @@ export type Database = {
           bpm?: number
           category: string
           created_at?: string
+          duration_target_sec?: number | null
           id?: string
           instructions: string
           level: string
@@ -80,6 +82,7 @@ export type Database = {
           bpm?: number
           category?: string
           created_at?: string
+          duration_target_sec?: number | null
           id?: string
           instructions?: string
           level?: string
