@@ -43,6 +43,22 @@ function LessonPage() {
     talaRef.current?.stop();
   }, []);
 
+  // Initialize BPM from lesson + persisted per-lesson override
+  useEffect(() => {
+    if (!lesson) return;
+    const key = `riyaz:lesson-bpm:${slug}`;
+    const saved = typeof window !== "undefined" ? window.localStorage.getItem(key) : null;
+    const n = saved ? Number(saved) : NaN;
+    setBpm(Number.isFinite(n) && n >= 40 && n <= 120 ? n : lesson.bpm);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lesson?.id]);
+
+  function updateBpm(v: number) {
+    setBpm(v);
+    try { window.localStorage.setItem(`riyaz:lesson-bpm:${slug}`, String(v)); } catch { /* ignore */ }
+  }
+
+
   useEffect(() => {
     if (!playing) return;
     const iv = setInterval(() => {
@@ -84,12 +100,13 @@ function LessonPage() {
       const aaroh = parseSargam(lesson.pattern || "S R G M P D N Ṡ");
       const avroh = reverseTokens(aaroh);
       const tokens: SeqToken[] = [...aaroh, { semis: 0, rest: true }, ...avroh, { semis: 0, rest: true }];
-      const h = startHarmoniumSequence({ sa: lesson.target_sa, tokens, bpm: lesson.bpm, loop: true, volume: 0.55, drone: true });
+      const h = startHarmoniumSequence({ sa: lesson.target_sa, tokens, bpm, loop: true, volume: 0.55, drone: true });
       h.onStep((i) => setActiveStep(i));
       harRef.current = h;
       if (lesson.tala) {
-        talaRef.current = startTala({ tala: getTala(lesson.tala), bpm: lesson.bpm });
+        talaRef.current = startTala({ tala: getTala(lesson.tala), bpm });
       }
+
       startedRef.current = Date.now() - elapsed * 1000;
       setPlaying(true);
     }
