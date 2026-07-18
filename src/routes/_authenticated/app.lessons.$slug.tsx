@@ -6,7 +6,7 @@ import { AppShell } from "@/components/app-shell";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { listLessons, logPracticeSession, markLessonComplete } from "@/lib/practice.functions";
-import { startHarmonium, type HarmoniumHandle } from "@/lib/audio/harmonium";
+import { startHarmoniumSequence, parseSargam, reverseTokens, type SequenceHandle, type SeqToken } from "@/lib/audio/harmonium";
 import { startTala, getTala, type TalaHandle } from "@/lib/audio/tala";
 import { Play, Square, Check, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
@@ -28,7 +28,8 @@ function LessonPage() {
 
   const [playing, setPlaying] = useState(false);
   const [elapsed, setElapsed] = useState(0);
-  const harRef = useRef<HarmoniumHandle | null>(null);
+  const [activeStep, setActiveStep] = useState<number | null>(null);
+  const harRef = useRef<SequenceHandle | null>(null);
   const talaRef = useRef<TalaHandle | null>(null);
   const startedRef = useRef<number | null>(null);
 
@@ -72,9 +73,15 @@ function LessonPage() {
       talaRef.current?.stop();
       harRef.current = null;
       talaRef.current = null;
+      setActiveStep(null);
       setPlaying(false);
     } else {
-      harRef.current = startHarmonium({ sa: lesson.target_sa, set: "sa-pa", volume: 0.6 });
+      const aaroh = parseSargam(lesson.pattern || "S R G M P D N Ṡ");
+      const avroh = reverseTokens(aaroh);
+      const tokens: SeqToken[] = [...aaroh, { semis: 0, rest: true }, ...avroh, { semis: 0, rest: true }];
+      const h = startHarmoniumSequence({ sa: lesson.target_sa, tokens, bpm: lesson.bpm, loop: true, volume: 0.55, drone: true });
+      h.onStep((i) => setActiveStep(i));
+      harRef.current = h;
       if (lesson.tala) {
         talaRef.current = startTala({ tala: getTala(lesson.tala), bpm: lesson.bpm });
       }
@@ -96,6 +103,9 @@ function LessonPage() {
         {lesson.pattern && (
           <div className="mono-num mt-4 rounded-md bg-muted p-4 text-center text-lg tracking-widest">
             {lesson.pattern}
+            {playing && activeStep !== null && (
+              <div className="mt-2 text-xs text-primary">▸ playing note {activeStep + 1}</div>
+            )}
           </div>
         )}
         <div className="mono-num mt-4 flex flex-wrap gap-4 text-xs text-muted-foreground">

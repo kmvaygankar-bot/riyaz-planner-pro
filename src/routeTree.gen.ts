@@ -16,6 +16,7 @@ import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedAppTunerRouteImport } from './routes/_authenticated/app.tuner'
 import { Route as AuthenticatedAppTanpuraRouteImport } from './routes/_authenticated/app.tanpura'
 import { Route as AuthenticatedAppTalaRouteImport } from './routes/_authenticated/app.tala'
+import { Route as AuthenticatedAppStudioRouteImport } from './routes/_authenticated/app.studio'
 import { Route as AuthenticatedAppProfileRouteImport } from './routes/_authenticated/app.profile'
 import { Route as AuthenticatedAppHistoryRouteImport } from './routes/_authenticated/app.history'
 import { Route as AuthenticatedAppLessonsIndexRouteImport } from './routes/_authenticated/app.lessons.index'
@@ -55,6 +56,11 @@ const AuthenticatedAppTalaRoute = AuthenticatedAppTalaRouteImport.update({
   path: '/app/tala',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAppStudioRoute = AuthenticatedAppStudioRouteImport.update({
+  id: '/app/studio',
+  path: '/app/studio',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedAppProfileRoute = AuthenticatedAppProfileRouteImport.update({
   id: '/app/profile',
   path: '/app/profile',
@@ -83,6 +89,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/app/history': typeof AuthenticatedAppHistoryRoute
   '/app/profile': typeof AuthenticatedAppProfileRoute
+  '/app/studio': typeof AuthenticatedAppStudioRoute
   '/app/tala': typeof AuthenticatedAppTalaRoute
   '/app/tanpura': typeof AuthenticatedAppTanpuraRoute
   '/app/tuner': typeof AuthenticatedAppTunerRoute
@@ -95,6 +102,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/app/history': typeof AuthenticatedAppHistoryRoute
   '/app/profile': typeof AuthenticatedAppProfileRoute
+  '/app/studio': typeof AuthenticatedAppStudioRoute
   '/app/tala': typeof AuthenticatedAppTalaRoute
   '/app/tanpura': typeof AuthenticatedAppTanpuraRoute
   '/app/tuner': typeof AuthenticatedAppTunerRoute
@@ -109,6 +117,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/_authenticated/app/history': typeof AuthenticatedAppHistoryRoute
   '/_authenticated/app/profile': typeof AuthenticatedAppProfileRoute
+  '/_authenticated/app/studio': typeof AuthenticatedAppStudioRoute
   '/_authenticated/app/tala': typeof AuthenticatedAppTalaRoute
   '/_authenticated/app/tanpura': typeof AuthenticatedAppTanpuraRoute
   '/_authenticated/app/tuner': typeof AuthenticatedAppTunerRoute
@@ -123,6 +132,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/app/history'
     | '/app/profile'
+    | '/app/studio'
     | '/app/tala'
     | '/app/tanpura'
     | '/app/tuner'
@@ -135,6 +145,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/app/history'
     | '/app/profile'
+    | '/app/studio'
     | '/app/tala'
     | '/app/tanpura'
     | '/app/tuner'
@@ -148,6 +159,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/_authenticated/app/history'
     | '/_authenticated/app/profile'
+    | '/_authenticated/app/studio'
     | '/_authenticated/app/tala'
     | '/_authenticated/app/tanpura'
     | '/_authenticated/app/tuner'
@@ -213,6 +225,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppTalaRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/app/studio': {
+      id: '/_authenticated/app/studio'
+      path: '/app/studio'
+      fullPath: '/app/studio'
+      preLoaderRoute: typeof AuthenticatedAppStudioRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/app/profile': {
       id: '/_authenticated/app/profile'
       path: '/app/profile'
@@ -247,6 +266,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAppHistoryRoute: typeof AuthenticatedAppHistoryRoute
   AuthenticatedAppProfileRoute: typeof AuthenticatedAppProfileRoute
+  AuthenticatedAppStudioRoute: typeof AuthenticatedAppStudioRoute
   AuthenticatedAppTalaRoute: typeof AuthenticatedAppTalaRoute
   AuthenticatedAppTanpuraRoute: typeof AuthenticatedAppTanpuraRoute
   AuthenticatedAppTunerRoute: typeof AuthenticatedAppTunerRoute
@@ -258,6 +278,7 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAppHistoryRoute: AuthenticatedAppHistoryRoute,
   AuthenticatedAppProfileRoute: AuthenticatedAppProfileRoute,
+  AuthenticatedAppStudioRoute: AuthenticatedAppStudioRoute,
   AuthenticatedAppTalaRoute: AuthenticatedAppTalaRoute,
   AuthenticatedAppTanpuraRoute: AuthenticatedAppTanpuraRoute,
   AuthenticatedAppTunerRoute: AuthenticatedAppTunerRoute,
