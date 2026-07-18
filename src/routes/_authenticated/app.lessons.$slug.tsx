@@ -1,0 +1,122 @@
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect, useRef, useState } from "react";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { AppShell } from "@/components/app-shell";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { listLessons, logPracticeSession, markLessonComplete } from "@/lib/practice.functions";
+import { startTanpura } from "@/lib/audio/tanpura";
+import { startTala, getTala, type TalaHandle } from "@/lib/audio/tala";
+import { Play, Square, Check, ArrowLeft } from "lucide-react";
+import { toast } from "sonner";
+
+export const Route = createFileRoute("/_authenticated/app/lessons/$slug")({
+  head: () => ({ meta: [{ title: "Lesson — Riyaz" }] }),
+  component: LessonPage,
+});
+
+function LessonPage() {
+  const { slug } = Route.useParams();
+  const navigate = useNavigate();
+  const list = useServerFn(listLessons);
+  const log = useServerFn(logPracticeSession);
+  const complete = useServerFn(markLessonComplete);
+
+  const { data: lessons = [] } = useQuery({ queryKey: ["lessons"], queryFn: () => list() });
+  const lesson = lessons.find((l) => l.slug === slug);
+
+  const [playing, setPlaying] = useState(false);
+  const [elapsed, setElapsed] = useState(0);
+  const tanRef = useRef<ReturnType<typeof startTanpura> | null>(null);
+  const talaRef = useRef<TalaHandle | null>(null);
+  const startedRef = useRef<number | null>(null);
+
+  useEffect(() => () => {
+    tanRef.current?.stop();
+    talaRef.current?.stop();
+  }, []);
+
+  useEffect(() => {
+    if (!playing) return;
+    const iv = setInterval(() => {
+      if (startedRef.current) setElapsed(Math.floor((Date.now() - startedRef.current) / 1000));
+    }, 1000);
+    return () => clearInterval(iv);
+  }, [playing]);
+
+  const completeMut = useMutation({
+    mutationFn: async () => {
+      if (!lesson) return;
+      if (elapsed >= 30) {
+        await log({ data: { duration_sec: elapsed, lesson_id: lesson.id, tools: { tanpura: true, tala: !!lesson.tala } } });
+      }
+      await complete({ data: { lesson_id: lesson.id } });
+    },
+    onSuccess: () => {
+      toast.success("Marked complete");
+      navigate({ to: "/app/lessons" });
+    },
+  });
+
+  if (!lesson) {
+    return <AppShell title="Lesson"><p className="text-sm text-muted-foreground">Loading…</p></AppShell>;
+  }
+
+  function toggle() {
+    if (!lesson) return;
+    if (playing) {
+      tanRef.current?.stop();
+      talaRef.current?.stop();
+      tanRef.current = null;
+      talaRef.current = null;
+      setPlaying(false);
+    } else {
+      tanRef.current = startTanpura({ sa: lesson.target_sa, pattern: "pa-sa", bpm: 48, volume: 0.55 });
+      if (lesson.tala) {
+        talaRef.current = startTala({ tala: getTala(lesson.tala), bpm: lesson.bpm });
+      }
+      startedRef.current = Date.now() - elapsed * 1000;
+      setPlaying(true);
+    }
+  }
+
+  const mm = String(Math.floor(elapsed / 60)).padStart(2, "0");
+  const ss = String(elapsed % 60).padStart(2, "0");
+
+  return (
+    <AppShell title={lesson.title}>
+      <Link to="/app/lessons" className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+        <ArrowLeft className="h-4 w-4" /> Lessons
+      </Link>
+      <Card className="p-6">
+        <p className="text-sm text-muted-foreground">{lesson.instructions}</p>
+        {lesson.pattern && (
+          <div className="mono-num mt-4 rounded-md bg-muted p-4 text-center text-lg tracking-widest">
+            {lesson.pattern}
+          </div>
+        )}
+        <div className="mono-num mt-4 flex flex-wrap gap-4 text-xs text-muted-foreground">
+          <span>Sa: <span className="text-foreground">{lesson.target_sa}</span></span>
+          <span>Tempo: <span className="text-foreground">{lesson.bpm} bpm</span></span>
+          {lesson.tala && <span>Tala: <span className="text-foreground">{lesson.tala}</span></span>}
+          <span>Loops: <span className="text-foreground">{lesson.loop_count}</span></span>
+        </div>
+      </Card>
+
+      <Card className="mt-4 p-6">
+        <div className="flex flex-col items-center gap-4">
+          <div className="mono-num text-5xl font-semibold">{mm}:{ss}</div>
+          <div className="flex gap-3">
+            <Button size="lg" onClick={toggle} className="h-14 w-14 rounded-full p-0">
+              {playing ? <Square className="h-5 w-5" /> : <Play className="h-5 w-5" />}
+            </Button>
+            <Button size="lg" variant="outline" onClick={() => completeMut.mutate()} disabled={completeMut.isPending}>
+              <Check className="mr-2 h-4 w-4" /> Mark complete
+            </Button>
+          </div>
+        </div>
+      </Card>
+    </AppShell>
+  );
+}
