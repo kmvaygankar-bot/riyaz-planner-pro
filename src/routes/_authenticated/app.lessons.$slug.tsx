@@ -144,6 +144,27 @@ function LessonPage() {
       </Card>
 
       <Card className="mt-4 p-6">
+        <div className="space-y-2">
+          <div className="flex items-baseline justify-between">
+            <Label>Tempo</Label>
+            <span className="mono-num text-sm text-muted-foreground">{bpm} bpm</span>
+          </div>
+          <Slider
+            min={40}
+            max={120}
+            step={2}
+            value={[bpm]}
+            onValueChange={(v) => updateBpm(v[0])}
+            disabled={playing}
+          />
+          <p className="text-xs text-muted-foreground">
+            Suggested: {lesson.bpm} bpm. Slow down while learning, speed up as you get comfortable.
+          </p>
+        </div>
+      </Card>
+
+      <Card className="mt-4 p-6">
+
         <div className="flex flex-col items-center gap-4">
           <div className="mono-num text-5xl font-semibold">{mm}:{ss}</div>
           <div className="flex gap-3">
