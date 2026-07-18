@@ -4,7 +4,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import type { ReactNode } from "react";
 
-const NAV = [
+type NavItem = { to: string; label: string; icon: typeof Home; exact?: boolean };
+const NAV: NavItem[] = [
   { to: "/app", label: "Today", icon: Home, exact: true },
   { to: "/app/tanpura", label: "Tanpura", icon: Music },
   { to: "/app/tala", label: "Tala", icon: Timer },
@@ -12,7 +13,7 @@ const NAV = [
   { to: "/app/tuner", label: "Tuner", icon: Mic },
   { to: "/app/history", label: "History", icon: BarChart3 },
   { to: "/app/profile", label: "Profile", icon: User },
-] as const;
+];
 
 export function AppShell({ children, title }: { children: ReactNode; title: string }) {
   const path = useRouterState({ select: (s) => s.location.pathname });
