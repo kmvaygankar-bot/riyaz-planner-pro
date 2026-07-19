@@ -21,8 +21,12 @@ export const Route = createFileRoute("/_authenticated/app/profile")({
 });
 
 function ProfilePage() {
+function ProfilePage() {
   const get = useServerFn(getProfile);
   const upd = useServerFn(updateProfile);
+  const qc = useQueryClient();
+  const { data } = useQuery({ queryKey: ["profile"], queryFn: () => get() });
+  const { isPremium, isNative, loading, restore, openManageSubscription } = usePremium();
   const qc = useQueryClient();
   const { data } = useQuery({ queryKey: ["profile"], queryFn: () => get() });
 
