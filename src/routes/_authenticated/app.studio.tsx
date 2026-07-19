@@ -543,9 +543,17 @@ function StudioPage() {
           </p>
           <audio controls src={recording.url} className="w-full" />
           <div className="mt-4 flex flex-wrap gap-3">
-            <Button onClick={downloadRecording}>
-              <Download className="mr-2 h-4 w-4" /> Save to device
-            </Button>
+            {isPremium ? (
+              <Button onClick={downloadRecording}>
+                <Download className="mr-2 h-4 w-4" /> Save to device
+              </Button>
+            ) : (
+              <Link to="/app/premium">
+                <Button variant="outline">
+                  <Lock className="mr-2 h-4 w-4" /> Save to device — Premium
+                </Button>
+              </Link>
+            )}
           </div>
         </Card>
       )}
