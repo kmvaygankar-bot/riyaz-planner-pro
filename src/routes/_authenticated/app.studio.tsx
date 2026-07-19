@@ -47,6 +47,7 @@ function tsStamp() {
 
 function StudioPage() {
   const log = useServerFn(logPracticeSession);
+  const { isPremium } = usePremium();
 
   const [file, setFile] = useState<File | null>(null);
   const [sa, setSa] = useState("C");
