@@ -5,6 +5,8 @@ import { AppShell } from "@/components/app-shell";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { listLessons } from "@/lib/practice.functions";
+import { usePremium } from "@/lib/premium";
+import { Lock, Crown } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/app/lessons/")({
   head: () => ({ meta: [{ title: "Lessons — Riyaz" }] }),
