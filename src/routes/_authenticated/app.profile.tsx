@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -7,9 +7,12 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { getProfile, updateProfile } from "@/lib/practice.functions";
 import { NOTE_NAMES } from "@/lib/audio/transport";
+import { usePremium } from "@/lib/premium";
+import { Crown, RefreshCw, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/app/profile")({
@@ -22,6 +25,7 @@ function ProfilePage() {
   const upd = useServerFn(updateProfile);
   const qc = useQueryClient();
   const { data } = useQuery({ queryKey: ["profile"], queryFn: () => get() });
+  const { isPremium, isNative, loading, restore, openManageSubscription } = usePremium();
 
   const [name, setName] = useState("");
   const [tradition, setTradition] = useState<"hindustani" | "carnatic" | "both">("both");
@@ -83,6 +87,56 @@ function ProfilePage() {
         <Button className="mt-6" onClick={() => mut.mutate()} disabled={mut.isPending}>
           Save changes
         </Button>
+      </Card>
+
+      <Card className="mt-4 p-6">
+        <div className="flex items-center gap-3">
+          <div className="rounded-full bg-primary/15 p-2 text-primary">
+            <Crown className="h-5 w-5" />
+          </div>
+          <div className="flex-1">
+            <div className="flex items-center gap-2">
+              <h2 className="font-semibold">Riyaz Premium</h2>
+              {isPremium && <Badge>Active</Badge>}
+            </div>
+            <p className="text-sm text-muted-foreground">
+              {isPremium
+                ? "Advanced lessons and Studio downloads are unlocked."
+                : "Unlock advanced lessons and Studio downloads."}
+            </p>
+          </div>
+        </div>
+        <div className="mt-5 flex flex-wrap gap-3">
+          {!isPremium && (
+            <Link to="/app/premium">
+              <Button>
+                <Crown className="mr-2 h-4 w-4" /> Upgrade to Premium
+              </Button>
+            </Link>
+          )}
+          <Button
+            variant="outline"
+            onClick={async () => {
+              try {
+                await restore();
+                toast.success("Purchases restored");
+              } catch (e) {
+                toast.error(e instanceof Error ? e.message : "Nothing to restore");
+              }
+            }}
+            disabled={!isNative || loading}
+          >
+            <RefreshCw className="mr-2 h-4 w-4" /> Restore purchases
+          </Button>
+          <Button variant="outline" onClick={openManageSubscription}>
+            <ExternalLink className="mr-2 h-4 w-4" /> Manage subscription
+          </Button>
+        </div>
+        {!isNative && (
+          <p className="mt-3 text-xs text-muted-foreground">
+            Subscriptions are managed through Google Play in the Riyaz Android app.
+          </p>
+        )}
       </Card>
     </AppShell>
   );

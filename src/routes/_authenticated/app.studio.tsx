@@ -18,6 +18,9 @@ import { startHarmoniumSequence, parseSargam, reverseTokens, type SequenceHandle
 import { startPitch, type PitchHandle } from "@/lib/audio/pitch";
 import { startRecording, type RecorderHandle, type RecordingResult } from "@/lib/audio/recorder";
 import { logPracticeSession } from "@/lib/practice.functions";
+import { usePremium } from "@/lib/premium";
+import { Link } from "@tanstack/react-router";
+import { Lock } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/app/studio")({
   head: () => ({ meta: [{ title: "Studio — Riyaz" }] }),
@@ -44,6 +47,7 @@ function tsStamp() {
 
 function StudioPage() {
   const log = useServerFn(logPracticeSession);
+  const { isPremium } = usePremium();
 
   const [file, setFile] = useState<File | null>(null);
   const [sa, setSa] = useState("C");
@@ -539,9 +543,17 @@ function StudioPage() {
           </p>
           <audio controls src={recording.url} className="w-full" />
           <div className="mt-4 flex flex-wrap gap-3">
-            <Button onClick={downloadRecording}>
-              <Download className="mr-2 h-4 w-4" /> Save to device
-            </Button>
+            {isPremium ? (
+              <Button onClick={downloadRecording}>
+                <Download className="mr-2 h-4 w-4" /> Save to device
+              </Button>
+            ) : (
+              <Link to="/app/premium">
+                <Button variant="outline">
+                  <Lock className="mr-2 h-4 w-4" /> Save to device — Premium
+                </Button>
+              </Link>
+            )}
           </div>
         </Card>
       )}
