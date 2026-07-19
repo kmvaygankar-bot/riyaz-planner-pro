@@ -29,6 +29,8 @@ function LessonPage() {
 
   const { data: lessons = [] } = useQuery({ queryKey: ["lessons"], queryFn: () => list() });
   const lesson = lessons.find((l) => l.slug === slug);
+  const { isPremium } = usePremium();
+  const locked = !!lesson && lesson.level.toLowerCase() === "advanced" && !isPremium;
 
   const [playing, setPlaying] = useState(false);
   const [elapsed, setElapsed] = useState(0);
