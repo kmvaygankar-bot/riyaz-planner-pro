@@ -18,6 +18,9 @@ import { startHarmoniumSequence, parseSargam, reverseTokens, type SequenceHandle
 import { startPitch, type PitchHandle } from "@/lib/audio/pitch";
 import { startRecording, type RecorderHandle, type RecordingResult } from "@/lib/audio/recorder";
 import { logPracticeSession } from "@/lib/practice.functions";
+import { usePremium } from "@/lib/premium";
+import { Link } from "@tanstack/react-router";
+import { Lock } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/app/studio")({
   head: () => ({ meta: [{ title: "Studio — Riyaz" }] }),
