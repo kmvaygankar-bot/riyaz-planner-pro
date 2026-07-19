@@ -88,6 +88,23 @@ function LessonPage() {
     return <AppShell title="Lesson"><p className="text-sm text-muted-foreground">Loading…</p></AppShell>;
   }
 
+  if (locked) {
+    return (
+      <AppShell title={lesson.title}>
+        <Link to="/app/lessons" className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+          <ArrowLeft className="h-4 w-4" /> Lessons
+        </Link>
+        <Card className="p-6">
+          <h2 className="text-lg font-semibold">This lesson is part of Riyaz Premium</h2>
+          <p className="mt-2 text-sm text-muted-foreground">{lesson.instructions}</p>
+          <Button className="mt-6" onClick={() => navigate({ to: "/app/premium" })}>
+            Unlock with Premium
+          </Button>
+        </Card>
+      </AppShell>
+    );
+  }
+
   const target = (lesson as { duration_target_sec?: number | null }).duration_target_sec ?? null;
 
   function toggle() {
