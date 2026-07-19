@@ -215,17 +215,15 @@ export function PremiumProvider({ children }: { children: ReactNode }) {
   }, [isNative, applyEntitlement]);
 
   const openManageSubscription = useCallback(async () => {
-    if (!isNative) {
-      window.open("https://play.google.com/store/account/subscriptions", "_blank");
-      return;
-    }
+    // Both web and Android open the Play Store subscription center;
+    // on Android Capacitor's default browser handler routes this to the Play app.
+    const url = "https://play.google.com/store/account/subscriptions";
     try {
-      const { Purchases } = await getPurchases();
-      await Purchases.showManageSubscriptions();
+      window.open(url, "_blank");
     } catch {
-      window.open("https://play.google.com/store/account/subscriptions", "_blank");
+      window.location.href = url;
     }
-  }, [isNative]);
+  }, []);
 
   const value: PremiumContextValue = {
     isPremium,
