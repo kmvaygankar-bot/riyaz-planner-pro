@@ -16,6 +16,7 @@ export const Route = createFileRoute("/_authenticated/app/tala")({
 });
 
 function TalaPage() {
+  useScreenBanner();
   const [talaId, setTalaId] = useState("teentaal");
   const [bpm, setBpm] = useState(80);
   const [playing, setPlaying] = useState(false);
