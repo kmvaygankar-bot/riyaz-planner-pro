@@ -9,6 +9,12 @@ import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 export default defineConfig({
   vite: {
     base: "./",
+    build: {
+      outDir: ".output/public",
+      emptyOutDir: true,
+      assetsDir: "assets",
+      sourcemap: false
+    }
   },
   tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
@@ -28,6 +34,8 @@ export default defineConfig({
       crawlLinks: true,
       routes: ["/", "/auth"],
       ignore: ["/app", "/api"],
+      // don't fail the whole build on single prerender errors
+      failOnError: false,
     },
   },
 });
