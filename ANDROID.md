@@ -1,5 +1,36 @@
 # Riyaz — Android Release Guide
 
+## AdMob (Google AdMob)
+
+All AdMob IDs live in **`src/lib/ads.tsx`** under the `ADMOB_CONFIG` constant — change them there and rebuild.
+
+Current IDs:
+
+- App ID: `ca-app-pub-5229984747218768~1557456372`
+- Banner Ad Unit: `ca-app-pub-5229984747218768/6538320315`
+- Interstitial Ad Unit: `ca-app-pub-5229984747218768/7608427624`
+
+Behaviour:
+
+- Banner shows at the bottom of **Today, Lessons, Tanpura, Tala** (free users only).
+- Interstitial fires after **every 3 completed practice sessions** (quick log, Studio save, or lesson complete).
+- Premium users (`isPremium === true`) never see either.
+- On the web build everything is inert — no ads, no crashes.
+
+**Required Android manifest entry** (add once, after `bunx cap add android`):
+
+Open `android/app/src/main/AndroidManifest.xml` and inside `<application>` add:
+
+```xml
+<meta-data
+    android:name="com.google.android.gms.ads.APPLICATION_ID"
+    android:value="ca-app-pub-5229984747218768~1557456372"/>
+```
+
+Without this, the app will crash on launch. The plugin `@capacitor-community/admob` is already installed and picked up by `bunx cap sync android`.
+
+
+
 Riyaz is a TanStack Start web app wrapped with **Capacitor** for Android and monetised with **RevenueCat + Google Play Billing**. This guide covers everything from a first Android Studio build to a signed AAB on the Play Store.
 
 ---
