@@ -11,6 +11,7 @@ import { startTanpura, type TanpuraPattern } from "@/lib/audio/tanpura";
 import { startHarmonium, type HarmoniumHandle, type HarmoniumNoteSet } from "@/lib/audio/harmonium";
 import { NOTE_NAMES } from "@/lib/audio/transport";
 import { Play, Square } from "lucide-react";
+import { useScreenBanner } from "@/lib/ads";
 
 export const Route = createFileRoute("/_authenticated/app/tanpura")({
   head: () => ({ meta: [{ title: "Drone — Riyaz" }] }),
