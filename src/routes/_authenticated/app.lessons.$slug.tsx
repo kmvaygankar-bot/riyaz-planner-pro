@@ -13,6 +13,7 @@ import { startTala, getTala, type TalaHandle } from "@/lib/audio/tala";
 import { Play, Square, Check, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import { usePremium } from "@/lib/premium";
+import { useAds } from "@/lib/ads";
 
 
 export const Route = createFileRoute("/_authenticated/app/lessons/$slug")({
@@ -31,6 +32,7 @@ function LessonPage() {
   const lesson = lessons.find((l) => l.slug === slug);
   const { isPremium } = usePremium();
   const locked = !!lesson && lesson.level.toLowerCase() === "advanced" && !isPremium;
+  const ads = useAds();
 
   const [playing, setPlaying] = useState(false);
   const [elapsed, setElapsed] = useState(0);
@@ -80,6 +82,7 @@ function LessonPage() {
     },
     onSuccess: () => {
       toast.success("Marked complete");
+      void ads.notifyPracticeSessionCompleted();
       navigate({ to: "/app/lessons" });
     },
   });

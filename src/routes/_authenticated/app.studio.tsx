@@ -19,6 +19,7 @@ import { startPitch, type PitchHandle } from "@/lib/audio/pitch";
 import { startRecording, type RecorderHandle, type RecordingResult } from "@/lib/audio/recorder";
 import { logPracticeSession } from "@/lib/practice.functions";
 import { usePremium } from "@/lib/premium";
+import { useAds } from "@/lib/ads";
 import { Link } from "@tanstack/react-router";
 import { Lock } from "lucide-react";
 
@@ -48,6 +49,7 @@ function tsStamp() {
 function StudioPage() {
   const log = useServerFn(logPracticeSession);
   const { isPremium } = usePremium();
+  const ads = useAds();
 
   const [file, setFile] = useState<File | null>(null);
   const [sa, setSa] = useState("C");
@@ -370,7 +372,10 @@ function StudioPage() {
         },
       });
     },
-    onSuccess: () => toast.success("Saved to history"),
+    onSuccess: () => {
+      toast.success("Saved to history");
+      void ads.notifyPracticeSessionCompleted();
+    },
     onError: (e) => toast.error(e instanceof Error ? e.message : "Could not save"),
   });
 

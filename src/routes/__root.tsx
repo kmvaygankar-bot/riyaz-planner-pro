@@ -14,6 +14,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { supabase } from "@/integrations/supabase/client";
 import { PremiumProvider } from "@/lib/premium";
+import { AdsProvider } from "@/lib/ads";
 
 function NotFoundComponent() {
   return (
@@ -136,8 +137,10 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <PremiumProvider>
-        <Outlet />
-        <Toaster theme="dark" richColors position="top-center" />
+        <AdsProvider>
+          <Outlet />
+          <Toaster theme="dark" richColors position="top-center" />
+        </AdsProvider>
       </PremiumProvider>
     </QueryClientProvider>
   );

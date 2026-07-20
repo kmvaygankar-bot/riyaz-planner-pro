@@ -9,6 +9,7 @@ import { Card } from "@/components/ui/card";
 import { Music, Timer, GraduationCap, Mic } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { useAds, useScreenBanner } from "@/lib/ads";
 
 export const Route = createFileRoute("/_authenticated/app/")({
   head: () => ({ meta: [{ title: "Today — Riyaz" }] }),
@@ -35,6 +36,8 @@ function computeStreak(dates: Date[]): number {
 }
 
 function TodayPage() {
+  useScreenBanner();
+  const ads = useAds();
   const list = useServerFn(listPracticeSessions);
   const log = useServerFn(logPracticeSession);
   const [name, setName] = useState<string>("");
@@ -54,7 +57,10 @@ function TodayPage() {
   const quickLog = useMutation({
     mutationFn: (minutes: number) =>
       log({ data: { duration_sec: minutes * 60, tools: { quick: true } } }),
-    onSuccess: () => toast.success("Session logged"),
+    onSuccess: () => {
+      toast.success("Session logged");
+      void ads.notifyPracticeSessionCompleted();
+    },
   });
 
   const streak = computeStreak(sessions.map((s) => new Date(s.started_at)));

@@ -11,6 +11,7 @@ import { startTanpura, type TanpuraPattern } from "@/lib/audio/tanpura";
 import { startHarmonium, type HarmoniumHandle, type HarmoniumNoteSet } from "@/lib/audio/harmonium";
 import { NOTE_NAMES } from "@/lib/audio/transport";
 import { Play, Square } from "lucide-react";
+import { useScreenBanner } from "@/lib/ads";
 
 export const Route = createFileRoute("/_authenticated/app/tanpura")({
   head: () => ({ meta: [{ title: "Drone — Riyaz" }] }),
@@ -20,6 +21,7 @@ export const Route = createFileRoute("/_authenticated/app/tanpura")({
 type Instrument = "tanpura" | "harmonium";
 
 function TanpuraPage() {
+  useScreenBanner();
   const [instrument, setInstrument] = useState<Instrument>("tanpura");
   const [sa, setSa] = useState("C");
   const [pattern, setPattern] = useState<TanpuraPattern>("pa-sa");

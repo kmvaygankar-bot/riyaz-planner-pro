@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { listLessons } from "@/lib/practice.functions";
 import { usePremium } from "@/lib/premium";
+import { useScreenBanner } from "@/lib/ads";
 import { Lock, Crown } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/app/lessons/")({
@@ -18,6 +19,7 @@ function isPremiumLesson(level: string) {
 }
 
 function LessonsPage() {
+  useScreenBanner();
   const fn = useServerFn(listLessons);
   const { data: lessons = [], isLoading } = useQuery({
     queryKey: ["lessons"],
