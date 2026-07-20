@@ -82,6 +82,7 @@ function LessonPage() {
     },
     onSuccess: () => {
       toast.success("Marked complete");
+      void ads.notifyPracticeSessionCompleted();
       navigate({ to: "/app/lessons" });
     },
   });
