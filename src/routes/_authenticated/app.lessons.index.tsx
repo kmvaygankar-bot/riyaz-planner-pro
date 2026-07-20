@@ -19,6 +19,7 @@ function isPremiumLesson(level: string) {
 }
 
 function LessonsPage() {
+  useScreenBanner();
   const fn = useServerFn(listLessons);
   const { data: lessons = [], isLoading } = useQuery({
     queryKey: ["lessons"],
