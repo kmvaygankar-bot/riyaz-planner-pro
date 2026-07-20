@@ -9,6 +9,7 @@ import { Card } from "@/components/ui/card";
 import { Music, Timer, GraduationCap, Mic } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { useAds, useScreenBanner } from "@/lib/ads";
 
 export const Route = createFileRoute("/_authenticated/app/")({
   head: () => ({ meta: [{ title: "Today — Riyaz" }] }),
