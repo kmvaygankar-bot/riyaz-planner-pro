@@ -23,5 +23,11 @@ export default defineConfig({
         dir: ".output/public",
       },
     ],
+    // Pre-render routes to generate static HTML for Capacitor
+    prerender: {
+      crawlLinks: true,
+      routes: ["/", "/auth"],
+      ignore: ["/app", "/api"],
+    },
   },
 });
