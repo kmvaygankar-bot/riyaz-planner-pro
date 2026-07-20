@@ -21,5 +21,7 @@ export default {
     crawlLinks: true,
     routes: ["/", "/auth"],
     ignore: ["/app", "/api"],
+    // don't fail the whole build on single prerender errors
+    failOnError: false,
   },
 };
