@@ -57,7 +57,10 @@ function TodayPage() {
   const quickLog = useMutation({
     mutationFn: (minutes: number) =>
       log({ data: { duration_sec: minutes * 60, tools: { quick: true } } }),
-    onSuccess: () => toast.success("Session logged"),
+    onSuccess: () => {
+      toast.success("Session logged");
+      void ads.notifyPracticeSessionCompleted();
+    },
   });
 
   const streak = computeStreak(sessions.map((s) => new Date(s.started_at)));
