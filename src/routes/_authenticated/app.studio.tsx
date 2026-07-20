@@ -372,7 +372,10 @@ function StudioPage() {
         },
       });
     },
-    onSuccess: () => toast.success("Saved to history"),
+    onSuccess: () => {
+      toast.success("Saved to history");
+      void ads.notifyPracticeSessionCompleted();
+    },
     onError: (e) => toast.error(e instanceof Error ? e.message : "Could not save"),
   });
 
