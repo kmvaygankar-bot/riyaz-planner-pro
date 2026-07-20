@@ -5,12 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev",
-    "build:server": "vite build",
-    "build:client": "npx tss build --client-only --out-dir=dist/client",
-    "build": "npm run build:server && npm run build:client",
+    "build": "vite build",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
-    "preview:client": "npx serve dist/client",
+    "preview:client": "npx serve .output/public",
     "lint": "eslint .",
     "format": "prettier --write ."
   },
