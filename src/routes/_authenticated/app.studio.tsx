@@ -19,6 +19,7 @@ import { startPitch, type PitchHandle } from "@/lib/audio/pitch";
 import { startRecording, type RecorderHandle, type RecordingResult } from "@/lib/audio/recorder";
 import { logPracticeSession } from "@/lib/practice.functions";
 import { usePremium } from "@/lib/premium";
+import { useAds } from "@/lib/ads";
 import { Link } from "@tanstack/react-router";
 import { Lock } from "lucide-react";
 
