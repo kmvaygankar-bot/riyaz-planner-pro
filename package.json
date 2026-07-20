@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev",
-    "build": "vite build",
+    "build:server": "vite build",
+    "build:client": "npx tss build --client-only --out-dir=dist/client",
+    "build": "npm run build:server && npm run build:client",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint .",
