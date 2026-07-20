@@ -15,4 +15,13 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
+  nitro: {
+    // Ensure client-side static files are generated alongside server output
+    publicAssets: [
+      {
+        baseURL: "/",
+        dir: ".output/public",
+      },
+    ],
+  },
 });
