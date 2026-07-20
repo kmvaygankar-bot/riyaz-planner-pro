@@ -36,6 +36,8 @@ function computeStreak(dates: Date[]): number {
 }
 
 function TodayPage() {
+  useScreenBanner();
+  const ads = useAds();
   const list = useServerFn(listPracticeSessions);
   const log = useServerFn(logPracticeSession);
   const [name, setName] = useState<string>("");
