@@ -21,6 +21,7 @@ export const Route = createFileRoute("/_authenticated/app/tanpura")({
 type Instrument = "tanpura" | "harmonium";
 
 function TanpuraPage() {
+  useScreenBanner();
   const [instrument, setInstrument] = useState<Instrument>("tanpura");
   const [sa, setSa] = useState("C");
   const [pattern, setPattern] = useState<TanpuraPattern>("pa-sa");
