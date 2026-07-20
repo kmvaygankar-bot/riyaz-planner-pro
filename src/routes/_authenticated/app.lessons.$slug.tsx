@@ -13,6 +13,7 @@ import { startTala, getTala, type TalaHandle } from "@/lib/audio/tala";
 import { Play, Square, Check, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import { usePremium } from "@/lib/premium";
+import { useAds } from "@/lib/ads";
 
 
 export const Route = createFileRoute("/_authenticated/app/lessons/$slug")({
