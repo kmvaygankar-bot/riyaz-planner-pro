@@ -1,0 +1,9 @@
+# Riyaz
+
+> A modern riyaz app for Hindustani and Carnatic vocalists — tanpura, harmonium, tala metronome, guided alankar/palta/meend lessons and real-time pitch feedback in one calm space.
+
+Riyaz helps singers show up every day with the tools of a good practice room: a steady harmonium drone, a clear tala, structured alankar and sargam lessons, and a live tuner that tells you the swara and cents-off in real time.
+
+## Pages
+
+- [Home](/): Overview of features and getting started with daily vocal riyaz.
