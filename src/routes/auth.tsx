@@ -11,7 +11,10 @@ export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
       { title: "Sign in — Riyaz" },
-      { name: "description", content: "Sign in or create your Riyaz account." },
+      { name: "description", content: "Sign in or create your Riyaz account to start daily vocal practice with harmonium, tala and guided lessons." },
+      { property: "og:title", content: "Sign in — Riyaz" },
+      { property: "og:description", content: "Sign in to continue your daily riyaz." },
+      { property: "og:url", content: "https://riyaz-planner-pro.lovable.app/auth" },
       { name: "robots", content: "noindex" },
     ],
   }),

@@ -2,6 +2,25 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Music, Timer, GraduationCap, Mic } from "lucide-react";
 
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "Riyaz — Daily Singing Practice for Hindustani & Carnatic" },
+      {
+        name: "description",
+        content:
+          "Practice vocal riyaz every day with a steady harmonium drone, tala metronome, guided alankar and palta lessons, and a live pitch tuner.",
+      },
+      { property: "og:title", content: "Riyaz — Daily Singing Practice" },
+      {
+        property: "og:description",
+        content:
+          "Harmonium, tala, guided alankar lessons and real-time pitch feedback for daily vocal riyaz.",
+      },
+      { property: "og:url", content: "https://riyaz-planner-pro.lovable.app/" },
+      { property: "og:type", content: "website" },
+    ],
+    links: [{ rel: "canonical", href: "https://riyaz-planner-pro.lovable.app/" }],
+  }),
   component: Landing,
 });
 
@@ -17,7 +36,7 @@ function Feature({
   return (
     <div className="rounded-xl border border-border bg-card p-5">
       <Icon className="h-5 w-5 text-primary" />
-      <h3 className="mt-3 text-base font-semibold">{title}</h3>
+      <h2 className="mt-3 text-base font-semibold">{title}</h2>
       <p className="mt-1 text-sm text-muted-foreground">{desc}</p>
     </div>
   );

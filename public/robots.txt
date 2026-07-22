@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /app/
+Disallow: /auth
+
+Sitemap: https://riyaz-planner-pro.lovable.app/sitemap.xml

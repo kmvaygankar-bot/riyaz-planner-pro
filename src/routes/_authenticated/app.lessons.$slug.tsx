@@ -17,7 +17,19 @@ import { useAds } from "@/lib/ads";
 
 
 export const Route = createFileRoute("/_authenticated/app/lessons/$slug")({
-  head: () => ({ meta: [{ title: "Lesson — Riyaz" }] }),
+  head: ({ params }) => {
+    const name = params.slug
+      .split("-")
+      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+      .join(" ");
+    return {
+      meta: [
+        { title: `${name} — Riyaz Lesson` },
+        { name: "description", content: `Practice the ${name} lesson with harmonium accompaniment, tala and guided sargam.` },
+        { name: "robots", content: "noindex" },
+      ],
+    };
+  },
   component: LessonPage,
 });
 
