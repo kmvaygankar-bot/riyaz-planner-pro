@@ -15,6 +15,9 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { supabase } from "@/integrations/supabase/client";
 import { PremiumProvider } from "@/lib/premium";
 import { AdsProvider } from "@/lib/ads";
+import { ErrorBoundary } from "@/lib/error-boundary";
+import { initializeErrorHandlers } from "@/lib/error-handlers";
+import { initializeAllServices } from "@/lib/startup-initialization";
 
 function NotFoundComponent() {
   return (
@@ -126,6 +129,18 @@ function RootComponent() {
   const router = useRouter();
 
   useEffect(() => {
+    // Install global crash logger + run guarded startup init (browser only).
+    if (typeof window !== "undefined") {
+      try {
+        initializeErrorHandlers();
+      } catch (e) {
+        console.error("[startup] initializeErrorHandlers failed", e);
+      }
+      void initializeAllServices().catch((e) =>
+        console.error("[startup] initializeAllServices threw", e),
+      );
+    }
+
     const { data: sub } = supabase.auth.onAuthStateChange((event) => {
       if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
       router.invalidate();
@@ -135,13 +150,23 @@ function RootComponent() {
   }, [queryClient, router]);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <PremiumProvider>
-        <AdsProvider>
-          <Outlet />
-          <Toaster theme="dark" richColors position="top-center" />
-        </AdsProvider>
-      </PremiumProvider>
-    </QueryClientProvider>
+    <ErrorBoundary
+      onError={(error) => {
+        try {
+          reportLovableError(error, { boundary: "root_error_boundary" });
+        } catch {
+          /* ignore */
+        }
+      }}
+    >
+      <QueryClientProvider client={queryClient}>
+        <PremiumProvider>
+          <AdsProvider>
+            <Outlet />
+            <Toaster theme="dark" richColors position="top-center" />
+          </AdsProvider>
+        </PremiumProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }

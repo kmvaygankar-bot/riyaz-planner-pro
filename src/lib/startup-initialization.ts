@@ -114,10 +114,14 @@ export async function initializeAllServices(): Promise<{
 }> {
   console.log("[startup] Starting service initialization...");
 
-  const results = {
-    supabase: { success: false, error: undefined as Error | undefined },
-    admob: { success: false, error: undefined as Error | undefined },
-    revenuecat: { success: false, error: undefined as Error | undefined },
+  const results: {
+    supabase: { success: boolean; error?: Error };
+    admob: { success: boolean; error?: Error };
+    revenuecat: { success: boolean; error?: Error };
+  } = {
+    supabase: { success: false },
+    admob: { success: false },
+    revenuecat: { success: false },
   };
 
   try {
