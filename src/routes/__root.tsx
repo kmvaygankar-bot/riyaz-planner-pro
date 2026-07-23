@@ -15,6 +15,9 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { supabase } from "@/integrations/supabase/client";
 import { PremiumProvider } from "@/lib/premium";
 import { AdsProvider } from "@/lib/ads";
+import { ErrorBoundary } from "@/lib/error-boundary";
+import { initializeErrorHandlers } from "@/lib/error-handlers";
+import { initializeAllServices } from "@/lib/startup-initialization";
 
 function NotFoundComponent() {
   return (
